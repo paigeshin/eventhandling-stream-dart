@@ -16,9 +16,29 @@ void main() {
     }
   });
 
+  final notGmailValidator =
+      new StreamTransformer.fromHandlers(handleData: (inputValue, sink) {
+    if ((inputValue as String).contains('@gmail.com')) {
+      sink.add(inputValue);
+    } else {
+      sink.addError('Enter a valid email');
+    }
+  });
+
+  final notEmptyValidator =
+      new StreamTransformer.fromHandlers(handleData: (inputValue, sink) {
+    if ((inputValue as String) != "") {
+      sink.add(inputValue);
+    } else {
+      sink.addError('Enter a valid email');
+    }
+  });
+
   input.onInput
       .map((dynamic event) => event.target.value)
       .transform(validator)
+      .transform(notGmailValidator)
+      .transform(notEmptyValidator)
       .listen((inputValie) => div.innerHtml = '',
           onError: (err) => div.innerHtml = err);
 }
